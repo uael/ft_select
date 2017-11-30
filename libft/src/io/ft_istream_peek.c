@@ -18,7 +18,7 @@ inline t_sz	ft_istream_get(t_istream *self, char *buf, size_t n)
 		return (ft_ifstream_get(&self->u.file, buf, n));
 	if (self->kind == ISTREAM_MEM)
 		return (ft_imstream_get(&self->u.mem, buf, n));
-	return (ERR(EBOUND));
+	return (ER(EBOUND));
 }
 
 inline t_st	ft_istream_peek(t_istream *self, char *c, size_t n)
@@ -27,5 +27,5 @@ inline t_st	ft_istream_peek(t_istream *self, char *c, size_t n)
 		return (ft_ifstream_peek(&self->u.file, c, n));
 	if (self->kind == ISTREAM_MEM)
 		return (ft_imstream_peek(&self->u.mem, c, n));
-	return (ERR(EBOUND));
+	return (ER(EBOUND));
 }

@@ -21,7 +21,7 @@ file(GLOB_RECURSE ft_select_SRCS ${ft_select_SRCS} ${ft_select_SRC_DIR}/*.c)
 add_executable(ft_select ${ft_select_HDR} ${ft_select_HDRS} ${ft_select_SRCS})
 set_property(TARGET ft_select PROPERTY C_STANDARD 90)
 target_include_directories(ft_select PUBLIC ${ft_select_INC_DIR})
-target_link_libraries(ft_select PUBLIC ft)
+target_link_libraries(ft_select PUBLIC ft ncurses)
 
 target_compile_definitions(ft_select
     PRIVATE $<$<CONFIG:Debug>:DEBUG>$<$<CONFIG:Release>:NDEBUG>)

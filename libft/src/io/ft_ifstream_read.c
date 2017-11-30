@@ -70,7 +70,7 @@ inline t_sz			ft_ifstream_read(t_ifstream *self, char *b, size_t len)
 	t_sz	sz;
 
 	if (self->fd < 0)
-		return (ERR(errno = EINVAL));
+		return (ER(errno = EINVAL));
 	else
 	{
 		beg = len;

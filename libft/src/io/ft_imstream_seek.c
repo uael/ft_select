@@ -21,14 +21,14 @@ inline t_st		ft_imstream_rewind(t_imstream *self, size_t n)
 {
 	(void)self;
 	(void)n;
-	return (ERR(errno = ENIMPL));
+	return (ER(errno = ENIMPL));
 }
 
 inline t_st		ft_imstream_forward(t_imstream *self, size_t n)
 {
 	(void)self;
 	(void)n;
-	return (ERR(errno = ENIMPL));
+	return (ER(errno = ENIMPL));
 }
 
 inline t_st		ft_imstream_seek(t_imstream *self, size_t off)

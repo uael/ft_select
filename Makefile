@@ -30,7 +30,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	+$(MAKE) -C $(LFT_PATH)
-	$(CC) -o $(NAME) $(OBJ) -L$(LFT_PATH) -lft
+	$(CC) -o $(NAME) $(OBJ) -L$(LFT_PATH) -lft -lncurses
 
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c

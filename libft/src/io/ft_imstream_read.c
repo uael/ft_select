@@ -16,7 +16,7 @@
 inline t_sz	ft_imstream_read(t_imstream *self, char *b, size_t len)
 {
 	if (!self->buf)
-		return (ERR(errno = EINVAL));
+		return (ER(errno = EINVAL));
 	if (len > self->len)
 		len = self->len;
 	if (len)
@@ -44,5 +44,5 @@ inline t_sz	ft_imstream_vreadf(t_imstream *self, char *fmt, va_list ap)
 	(void)self;
 	(void)fmt;
 	(void)ap;
-	return (ERR(errno = ENIMPL));
+	return (ER(errno = ENIMPL));
 }

@@ -27,10 +27,10 @@ typedef ssize_t	t_sz;
 
 # define OK (0)
 # define NOK (1)
-# define ERR(ERRNO) (-(ERRNO))
-# define ENO ERR(errno)
+# define ER(ERRNO) (-(ERRNO))
+# define ENO ER(errno)
 # define ST_HDL(ST, OTHERWISE) ((ST) < 0 ? (ST) : (OTHERWISE))
-# define ST_TOENO(ST) ERR(ST)
+# define ST_TOENO(ST) ER(ST)
 # define ISENO(ST, ERRNO) (ST_TOENO(ST) == (ERRNO))
 # define ISE(S) ((S) < OK)
 # define SZ_NOK(SZ) ((SZ) <= OK)
