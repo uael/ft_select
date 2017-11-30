@@ -1,0 +1,7 @@
+.idea/
+cmake-build-debug/
+out/
+obj/
+ft_select
+ft_select.exe
+*.a
