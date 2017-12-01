@@ -34,7 +34,7 @@ $(NAME): $(OBJ)
 
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
-	@mkdir -p $(OBJ_PATH) $(OBJ_PATH)/bi
+	@mkdir -p $(OBJ_PATH)
 	$(CC) $(CC_FLAGS) $(INC) -o $@ -c $<
 
 clean:

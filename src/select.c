@@ -24,6 +24,7 @@ typedef struct	s_trm
 	t_tty		tty;
 	int			height;
 	int			width;
+	t_ostream	out;
 }				t_trm;
 
 t_st	ft_trm_ctor(t_trm *self)
@@ -33,7 +34,7 @@ t_st	ft_trm_ctor(t_trm *self)
 	FT_INIT(self, t_trm);
 	if (!(tnm = getenv("TERM")))
 		return (ft_passf(NOK, TRM_USG, "select"));
-	if (tgetent(NULL, tnm) <= 0 )
+	if (tgetent(NULL, tnm) <= 0 || ST_NOK(ft_ostream_open(&self->out, TRM_DEV)))
 		return (ft_passf(NOK, "%s: %e.\n", errno));
 	self->height = tgetnum("li");
 	self->width = tgetnum("co");
@@ -65,57 +66,68 @@ static char		*g_trm_mvs[8] =
 	[TRM_RIGHT + 1] = "RI"
 };
 
-void	ft_trm_mv(t_trm_mv mv, int n)
+void	ft_trm_mv(t_trm *t, t_trm_mv mv, int n)
 {
 	if (n == 1)
-		tputs(tgetstr(g_trm_mvs[mv], NULL), 1, putchar);
+		ft_ostream_puts(&t->out, tgetstr(g_trm_mvs[mv], NULL));
 	else if (n)
-		tputs(tgoto(tgetstr(g_trm_mvs[mv + 1], NULL), 0, n), 1, putchar);
+		ft_ostream_puts(&t->out, tgoto(tgetstr(g_trm_mvs[mv + 1], NULL), 0, n));
 }
 
-void	ft_trm_goto_x(int x)
+void	ft_trm_goto_x(t_trm *t, int x)
 {
-	tputs(tgoto(tgetstr("ch", NULL), 0, x), 1, putchar);
+	ft_ostream_puts(&t->out, tgoto(tgetstr("ch", NULL), 0, x));
 }
 
-void	ft_trm_goto_y(int y)
+void	ft_trm_goto_y(t_trm *t, int y)
 {
-	tputs(tgoto(tgetstr("cv", NULL), 0, y), 1, putchar);
+	ft_ostream_puts(&t->out, tgoto(tgetstr("cv", NULL), 0, y));
 }
 
-void	select_print(t_trm *t, int ac, char **av, int pad)
+void	select_draw(t_trm *t, t_vstr *av, int pad, int select)
 {
-	int i;
-	int j;
-	int k;
+	int			y;
+	int			x;
+	uint32_t	k;
 
-	i = 0;
+	y = 0;
 	k = 0;
 	pad += 4;
-	while (i < t->height && k < ac - 1)
+	while (y < t->height - 1 && k < av->len - (x = 0))
 	{
-		j = 0;
-		while (j < (t->width / pad) && k < ac - 1)
+		while (x < (t->width / pad) && k < av->len)
 		{
-			ft_trm_goto_x(j * pad);
-			tputs("[ ", 1, putchar);
-			ft_trm_goto_x((j * pad) + 2);
-			tputs(av[++k], 1, putchar);
-			ft_trm_goto_x((j * pad) + pad - 1);
-			tputs("]", 1, putchar);
-			++j;
+			ft_trm_goto_x(t, x * pad);
+			ft_ostream_puts(&t->out, "[ ");
+			ft_trm_goto_x(t, (x * pad) + 2);
+			ft_ostream_puts(&t->out, av->buf[k++]);
+			ft_trm_goto_x(t, (x * pad) + pad - 1);
+			ft_ostream_puts(&t->out, "]");
+			++x;
 		}
-		ft_trm_mv(TRM_DOWN, 1);
-		++i;
+		if (y < t->height - 1 && k < av->len && ++y)
+			ft_trm_mv(t, TRM_DOWN, 1);
 	}
+	ft_ostream_puts(&t->out, tgoto(tgetstr("UP", NULL), 0, y));
+	ft_trm_goto_x(t, (--select % (t->width / pad)) * pad);
+	ft_trm_goto_y(t, select / (t->width / pad));
+	ft_ostream_flush(&t->out);
 }
 
 int		main(int ac, char **av)
 {
 	t_trm		trm;
+	t_vstr		avv;
+	int			i;
 
 	if (ST_NOK(ft_trm_ctor(&trm)))
 		return (EXIT_FAILURE);
-	select_print(&trm, ac, av, 15);
+	ft_vstr_ctor(&avv);
+	i = 0;
+	while (++i < ac)
+		if (!ft_vstr_pushc(&avv, av[i]))
+			ft_fatal(ERR(errno), NULL, NULL, "%s: %e\n", "select", errno);
+	select_draw(&trm, &avv, 15, 3);
+	read(0, NULL, 1);
 	return (EXIT_SUCCESS);
 }
