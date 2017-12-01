@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_istream_get.c                                   :+:      :+:    :+:   */
+/*   ft_omstream.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,22 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/io/istream.h"
+#include "libft/io/omstream.h"
 
-inline t_sz	ft_istream_get(t_istream *self, char *buf, size_t n)
+inline void	ft_omstream_open(t_omstream *self)
 {
-	if (self->kind == ISTREAM_FILE)
-		return (ft_ifstream_get(&self->u.file, buf, n));
-	if (self->kind == ISTREAM_MEM)
-		return (ft_imstream_get(&self->u.mem, buf, n));
-	return (ERR(EBOUND));
+	ft_du8_ctor(self);
 }
 
-inline t_st	ft_istream_peek(t_istream *self, char *c, size_t n)
+inline void	ft_omstream_close(t_omstream *self)
 {
-	if (self->kind == ISTREAM_FILE)
-		return (ft_ifstream_peek(&self->u.file, c, n));
-	if (self->kind == ISTREAM_MEM)
-		return (ft_imstream_peek(&self->u.mem, c, n));
-	return (ERR(EBOUND));
+	ft_du8_dtor(self, NULL);
 }

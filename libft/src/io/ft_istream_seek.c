@@ -26,7 +26,7 @@ inline t_st		ft_istream_rewind(t_istream *self, size_t n)
 		return (ft_ifstream_rewind(&self->u.file, n));
 	if (self->kind == ISTREAM_MEM)
 		return (ft_imstream_rewind(&self->u.mem, n));
-	return (ER(EBOUND));
+	return (ERR(EBOUND));
 }
 
 inline t_st		ft_istream_forward(t_istream *self, size_t n)
@@ -35,7 +35,7 @@ inline t_st		ft_istream_forward(t_istream *self, size_t n)
 		return (ft_ifstream_forward(&self->u.file, n));
 	if (self->kind == ISTREAM_MEM)
 		return (ft_imstream_forward(&self->u.mem, n));
-	return (ER(EBOUND));
+	return (ERR(EBOUND));
 }
 
 inline t_st		ft_istream_seek(t_istream *self, size_t off)
@@ -44,7 +44,7 @@ inline t_st		ft_istream_seek(t_istream *self, size_t off)
 		return (ft_ifstream_seek(&self->u.file, off));
 	if (self->kind == ISTREAM_MEM)
 		return (ft_imstream_seek(&self->u.mem, off));
-	return (ER(EBOUND));
+	return (ERR(EBOUND));
 }
 
 inline size_t	ft_istream_tell(t_istream const *self)

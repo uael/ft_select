@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_istream_get.c                                   :+:      :+:    :+:   */
+/*   ft_omstream_peek.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,22 +10,37 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/io/istream.h"
+#include "libft/io/omstream.h"
 
-inline t_sz	ft_istream_get(t_istream *self, char *buf, size_t n)
+inline void		ft_omstream_flush(t_omstream *self)
 {
-	if (self->kind == ISTREAM_FILE)
-		return (ft_ifstream_get(&self->u.file, buf, n));
-	if (self->kind == ISTREAM_MEM)
-		return (ft_imstream_get(&self->u.mem, buf, n));
-	return (ERR(EBOUND));
+	(void)self;
 }
 
-inline t_st	ft_istream_peek(t_istream *self, char *c, size_t n)
+inline t_st		ft_omstream_rewind(t_omstream *self, size_t n)
 {
-	if (self->kind == ISTREAM_FILE)
-		return (ft_ifstream_peek(&self->u.file, c, n));
-	if (self->kind == ISTREAM_MEM)
-		return (ft_imstream_peek(&self->u.mem, c, n));
-	return (ERR(EBOUND));
+	if (n > self->cur)
+		return (ERR(errno = EINVAL));
+	self->cur -= n;
+	return (OK);
+}
+
+inline t_st		ft_omstream_forward(t_omstream *self, size_t n)
+{
+	if (self->cur + n > self->len)
+		return (ERR(errno = EINVAL));
+	self->cur += n;
+	return (OK);
+}
+
+inline t_st		ft_omstream_seek(t_omstream *self, size_t off)
+{
+	if (self->cur > off)
+		return (ft_omstream_rewind(self, self->cur - off));
+	return (ft_omstream_forward(self, off - self->cur));
+}
+
+inline size_t	ft_omstream_tell(t_omstream const *self)
+{
+	return (self->cur);
 }

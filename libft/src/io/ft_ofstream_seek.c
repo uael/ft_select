@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_imstream_peek.c                                 :+:      :+:    :+:   */
+/*   ft_ofstream_peek.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,35 +10,43 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/io/imstream.h"
+#include "libft/io/ofstream.h"
 
-inline void		ft_imstream_flush(t_imstream *self)
+inline void		ft_ofstream_flush(t_ofstream *self)
 {
-	(void)self;
+	ssize_t	sz;
+
+	if ((sz = write(self->fd, self->buf, self->len)) >= 0)
+	{
+		self->beg += sz;
+		self->len = 0;
+	}
 }
 
-inline t_st		ft_imstream_rewind(t_imstream *self, size_t n)
+inline t_st		ft_ofstream_rewind(t_ofstream *self, size_t n)
 {
 	(void)self;
 	(void)n;
 	return (ERR(errno = ENIMPL));
 }
 
-inline t_st		ft_imstream_forward(t_imstream *self, size_t n)
+inline t_st		ft_ofstream_forward(t_ofstream *self, size_t n)
 {
 	(void)self;
 	(void)n;
 	return (ERR(errno = ENIMPL));
 }
 
-inline t_st		ft_imstream_seek(t_imstream *self, size_t off)
+inline t_st		ft_ofstream_seek(t_ofstream *self, size_t off)
 {
+	if (!self->filename || self->fd < 0)
+		return (ERR(errno = EINVAL));
 	if (self->cur > off)
-		return (ft_imstream_rewind(self, self->cur - off));
-	return (ft_imstream_forward(self, off - self->cur));
+		return (ft_ofstream_rewind(self, self->cur - off));
+	return (ft_ofstream_forward(self, off - self->cur));
 }
 
-inline size_t	ft_imstream_tell(t_imstream const *self)
+inline size_t	ft_ofstream_tell(t_ofstream const *self)
 {
 	return (self->cur);
 }

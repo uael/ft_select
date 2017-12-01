@@ -1,31 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_istream_get.c                                   :+:      :+:    :+:   */
+/*   ft_cout_write.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/17 09:51:01 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 07:09:14 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/io/istream.h"
+#include "libft/io/ostream.h"
 
-inline t_sz	ft_istream_get(t_istream *self, char *buf, size_t n)
+inline t_sz	ft_cout_write(char const *buf, size_t len)
 {
-	if (self->kind == ISTREAM_FILE)
-		return (ft_ifstream_get(&self->u.file, buf, n));
-	if (self->kind == ISTREAM_MEM)
-		return (ft_imstream_get(&self->u.mem, buf, n));
-	return (ERR(EBOUND));
+	return (ft_ostream_write(g_cout, buf, len));
 }
 
-inline t_st	ft_istream_peek(t_istream *self, char *c, size_t n)
+t_sz		ft_cout_writef(char const *fmt, ...)
 {
-	if (self->kind == ISTREAM_FILE)
-		return (ft_ifstream_peek(&self->u.file, c, n));
-	if (self->kind == ISTREAM_MEM)
-		return (ft_imstream_peek(&self->u.mem, c, n));
-	return (ERR(EBOUND));
+	va_list	ap;
+	t_sz	sz;
+
+	va_start(ap, fmt);
+	sz = ft_cout_vwritef(fmt, ap);
+	va_end(ap);
+	return (sz);
+}
+
+inline t_sz	ft_cout_vwritef(char const *fmt, va_list ap)
+{
+	return (ft_ostream_vwritef(g_cout, fmt, ap));
+}
+
+inline t_sz	ft_cout_putc(char c)
+{
+	return (ft_ostream_putc(g_cout, c));
+}
+
+inline t_sz	ft_cout_puts(char const *s)
+{
+	return (ft_ostream_puts(g_cout, s));
 }

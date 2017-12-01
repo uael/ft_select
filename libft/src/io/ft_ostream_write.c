@@ -1,48 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_imstream_read.c                                 :+:      :+:    :+:   */
+/*   ft_ostream_write.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/17 09:51:01 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 07:21:44 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/math.h"
-#include "libft/io/imstream.h"
+#include "libft/io/ostream.h"
 
-inline t_sz	ft_imstream_read(t_imstream *self, char *b, size_t len)
+inline t_sz	ft_ostream_write(t_ostream *self, char const *sr, size_t len)
 {
-	if (!self->buf)
-		return (ERR(errno = EINVAL));
-	if (len > self->len)
-		len = self->len;
-	if (len)
-	{
-		if (b)
-			ft_memcpy(b, self->buf + self->cur, len * sizeof(char));
-		self->cur += len;
-	}
-	return (len);
+	if (self->kind == OSTREAM_FILE)
+		return (ft_ofstream_write(&self->u.file, sr, len));
+	return (ft_omstream_write(&self->u.mem, sr, len));
 }
 
-t_sz		ft_imstream_readf(t_imstream *self, char *fmt, ...)
+t_sz		ft_ostream_writef(t_ostream *self, char const *fmt, ...)
 {
 	va_list	ap;
-	t_sz	n;
+	t_sz	sz;
 
 	va_start(ap, fmt);
-	n = ft_imstream_vreadf(self, fmt, ap);
+	sz = ft_ostream_vwritef(self, fmt, ap);
 	va_end(ap);
-	return (n);
+	return (sz);
 }
 
-inline t_sz	ft_imstream_vreadf(t_imstream *self, char *fmt, va_list ap)
+inline t_sz	ft_ostream_vwritef(t_ostream *self, char const *fmt, va_list ap)
 {
-	(void)self;
-	(void)fmt;
-	(void)ap;
-	return (ERR(errno = ENIMPL));
+	if (self->kind == OSTREAM_FILE)
+		return (ft_ofstream_vwritef(&self->u.file, fmt, ap));
+	return (ft_omstream_vwritef(&self->u.mem, fmt, ap));
 }

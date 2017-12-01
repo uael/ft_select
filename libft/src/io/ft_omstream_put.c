@@ -1,31 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_istream_get.c                                   :+:      :+:    :+:   */
+/*   ft_omstream_put.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:33 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/17 09:51:01 by null             ###   ########.fr       */
+/*   Updated: 2017/11/23 07:50:09 by null             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/io/istream.h"
+#include "libft/io/omstream.h"
 
-inline t_sz	ft_istream_get(t_istream *self, char *buf, size_t n)
+inline t_sz	ft_omstream_putc(t_omstream *self, char c)
 {
-	if (self->kind == ISTREAM_FILE)
-		return (ft_ifstream_get(&self->u.file, buf, n));
-	if (self->kind == ISTREAM_MEM)
-		return (ft_imstream_get(&self->u.mem, buf, n));
-	return (ERR(EBOUND));
+	return (ft_omstream_write(self, &c, 1));
 }
 
-inline t_st	ft_istream_peek(t_istream *self, char *c, size_t n)
+inline t_sz	ft_omstream_puts(t_omstream *self, char const *s)
 {
-	if (self->kind == ISTREAM_FILE)
-		return (ft_ifstream_peek(&self->u.file, c, n));
-	if (self->kind == ISTREAM_MEM)
-		return (ft_imstream_peek(&self->u.mem, c, n));
-	return (ERR(EBOUND));
+	return (ft_omstream_write(self, s, ft_strlen(s)));
 }

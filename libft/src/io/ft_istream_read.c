@@ -19,7 +19,7 @@ inline t_sz	ft_istream_read(t_istream *self, char *b, size_t len)
 		return (ft_ifstream_read(&self->u.file, b, len));
 	if (self->kind == ISTREAM_MEM)
 		return (ft_imstream_read(&self->u.mem, b, len));
-	return (ER(EBOUND));
+	return (ERR(EBOUND));
 }
 
 t_sz		ft_istream_readf(t_istream *self, char *fmt, ...)
@@ -39,5 +39,5 @@ inline t_sz	ft_istream_vreadf(t_istream *self, char *fmt, va_list ap)
 		return (ft_ifstream_vreadf(&self->u.file, fmt, ap));
 	if (self->kind == ISTREAM_MEM)
 		return (ft_imstream_vreadf(&self->u.mem, fmt, ap));
-	return (ER(EBOUND));
+	return (ERR(EBOUND));
 }

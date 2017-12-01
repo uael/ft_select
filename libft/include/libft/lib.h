@@ -27,10 +27,10 @@ typedef ssize_t	t_sz;
 
 # define OK (0)
 # define NOK (1)
-# define ER(ERRNO) (-(ERRNO))
-# define ENO ER(errno)
+# define ERR(ERRNO) (-(ERRNO))
+# define ENO ERR(errno)
 # define ST_HDL(ST, OTHERWISE) ((ST) < 0 ? (ST) : (OTHERWISE))
-# define ST_TOENO(ST) ER(ST)
+# define ST_TOENO(ST) ERR(ST)
 # define ISENO(ST, ERRNO) (ST_TOENO(ST) == (ERRNO))
 # define ISE(S) ((S) < OK)
 # define SZ_NOK(SZ) ((SZ) <= OK)
@@ -53,12 +53,14 @@ extern int64_t	ft_atoi(char const *str);
 extern double	ft_atod(char const *str);
 extern char		*ft_itoa(int64_t n, uint8_t base);
 extern char		*ft_utoa(uint64_t n, uint8_t base);
-extern int		ft_dtor(int code, t_dtor dtor, void *arg, char const *msg, ...);
-extern int		ft_exit(int code, t_dtor dtor, void *arg, char const *msg, ...);
-extern int		ft_ret(int code, char const *msg, ...);
-extern int		ft_szret(int code, char const *msg, ...);
-extern void		ft_pfree(void **pptr);
+
 extern char		*ft_strerr(int errn);
+extern int		ft_dtor(int no, t_dtor dtor, void *arg, char const *msg, ...);
+extern int		ft_fatal(int no, t_dtor dtor, void *arg, char const *msg, ...);
+extern int		ft_passf(int no, char const *msg, ...);
+extern int		ft_szret(int no, char const *msg, ...);
+
+extern void		ft_pfree(void **pptr);
 extern void		ft_clean(void *ptr);
 
 # define GC(T) __attribute__((__cleanup__(ft_clean))) T

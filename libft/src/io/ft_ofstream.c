@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_istream_get.c                                   :+:      :+:    :+:   */
+/*   ft_ofstream.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,22 +10,30 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/io/istream.h"
+#include "libft/io/ofstream.h"
 
-inline t_sz	ft_istream_get(t_istream *self, char *buf, size_t n)
+inline t_st	ft_ofstream_open(t_ofstream *self, char const *filename)
 {
-	if (self->kind == ISTREAM_FILE)
-		return (ft_ifstream_get(&self->u.file, buf, n));
-	if (self->kind == ISTREAM_MEM)
-		return (ft_imstream_get(&self->u.mem, buf, n));
-	return (ERR(EBOUND));
+	FT_INIT(self, t_ofstream);
+	if ((self->fd = open(filename, O_WRONLY | O_APPEND | O_CREAT)) < 0)
+		return (ENO);
+	self->filename = filename;
+	return (OK);
 }
 
-inline t_st	ft_istream_peek(t_istream *self, char *c, size_t n)
+inline t_st	ft_ofstream_close(t_ofstream *self)
 {
-	if (self->kind == ISTREAM_FILE)
-		return (ft_ifstream_peek(&self->u.file, c, n));
-	if (self->kind == ISTREAM_MEM)
-		return (ft_imstream_peek(&self->u.mem, c, n));
-	return (ERR(EBOUND));
+	if (self->filename && self->fd > 1)
+	{
+		ft_ofstream_flush(self);
+		if (close(self->fd) < 0)
+			return (ENO);
+		if (self->buf)
+		{
+			free(self->buf);
+			self->buf = NULL;
+		}
+		self->filename = NULL;
+	}
+	return (OK);
 }
