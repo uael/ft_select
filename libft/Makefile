@@ -18,7 +18,7 @@ CFLAGS += -Wall -Werror -Wextra -O3
 SRC_PATH = ./src/
 INC_PATH = ./include/
 OBJ_PATH = ./obj/
-OBJ_PATHS = cty ds fs int io lex lib math mem str
+OBJ_PATHS = cty ds fs int io lex lib math mem str trm
 
 OBJ_SUB_PATHS = $(addprefix $(OBJ_PATH),$(OBJ_PATHS))
 OBJ_NAME = $(SRC_NAME:.c=.o)
@@ -269,7 +269,10 @@ SRC_NAME += \
 	str/ft_strnlen.c \
 	str/ft_strnstr.c \
 	str/ft_strrchr.c \
-	str/ft_strstr.c
+	str/ft_strstr.c \
+	trm/ft_caps.c \
+	trm/ft_trm.c \
+	trm/ft_trm_keys.c
 
 all: $(NAME)
 
