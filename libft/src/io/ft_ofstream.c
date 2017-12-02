@@ -15,7 +15,7 @@
 inline t_st	ft_ofstream_open(t_ofstream *self, char const *filename)
 {
 	FT_INIT(self, t_ofstream);
-	if ((self->fd = open(filename, O_WRONLY | O_APPEND | O_CREAT)) < 0)
+	if ((self->fd = open(filename, O_APPEND | O_CREAT | O_RDWR | O_NOCTTY)) < 0)
 		return (ENO);
 	self->filename = filename;
 	return (OK);
