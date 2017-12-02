@@ -12,7 +12,7 @@
 
 #include "ft_select.h"
 
-void	select_draw_input(t_trm *t, t_vstr *av, int *i, int const *sel)
+void	slct_draw_input(t_trm *t, t_vstr *av, int *i, int const *sel)
 {
 	int		x;
 
@@ -32,7 +32,7 @@ void	select_draw_input(t_trm *t, t_vstr *av, int *i, int const *sel)
 	}
 }
 
-void	select_draw(t_trm *t, t_vstr *av, int *i, int const *sel)
+void	slct_draw(t_trm *t, t_vstr *av, int *i, int const *sel)
 {
 	int		mx;
 	int		my;
@@ -46,11 +46,43 @@ void	select_draw(t_trm *t, t_vstr *av, int *i, int const *sel)
 	i[2] = (i[1] / mx) >= my ? (uint32_t)((i[1] / mx) - (my - 1)) * mx : 0;
 	while (y < my && i[2] < (int)av->len)
 	{
-		select_draw_input(t, av, i, sel);
+		slct_draw_input(t, av, i, sel);
 		if (i[2] < (int)av->len && ++y < my)
 			ft_ostream_puts(&t->out, ft_caps_down());
 	}
 	ft_ostream_flush(&t->out);
+}
+
+t_st	slct(t_trm *t, t_vstr *av, int *sel)
+{
+	int	col;
+	int	ch;
+	int	i;
+	
+	col = t->w / (15 + 4);
+	ft_ostream_puts(&t->out, tgetstr("vi", NULL));
+	slct_draw(t, av, (int [3]){15, i = 0, 0}, sel);
+	while ((ch = ft_trm_getch(t)) >= 0)
+	{
+		if (ch == TRM_K_ESCAPE)
+			sel[i] ^= 1;
+		if (ch == TRM_K_ESCAPE || ch == TRM_K_TAB || ch == TRM_K_RIGHT)
+			i = i + 1 < (int)av->len ? i + 1 : 0;
+		else if (ch == TRM_K_LEFT)
+			i = i >= 1 ? i - 1 : (int)av->len - 1;
+		else if (ch == TRM_K_UP && i - col >= 0)
+			i -= col;
+		else if (ch == TRM_K_DOWN || ch == TRM_K_UP)
+			i = i + col < (int)av->len ? i + col : i % col;
+		else if (ch == TRM_K_ENTER)
+			break ;
+		else if (ch == TRM_K_DELETE || ch == TRM_K_BACKSPACE)
+			ft_vstr_remove(av, (size_t)i, NULL);
+		else if (ch == TRM_K_ESC)
+			return (NOK);
+		slct_draw(t, av, (int [3]){15, i, 0}, sel);
+	}
+	return (OK);
 }
 
 int		main(int ac, char **av)
@@ -58,8 +90,7 @@ int		main(int ac, char **av)
 	t_trm		t;
 	t_vstr		avv;
 	int			i;
-	int			ch;
-	int			col;
+	int			p;
 	int			sel[ac];
 
 	if (ST_NOK(ft_trm_ctor(&t)))
@@ -69,39 +100,16 @@ int		main(int ac, char **av)
 	while (++i < ac)
 		if (!ft_vstr_pushc(&avv, av[i]))
 			ft_fatal(ERR(errno), NULL, NULL, "%s: %e\n", "select", errno);
-	col = t.w / (15 + 4);
 	ft_memset(sel, 0, (size_t)ac);
-	ft_ostream_puts(&t.out, tgetstr("vi", NULL));
-	select_draw(&t, &avv, (int [3]){15, i = 0, 0}, sel);
-	while ((ch = ft_trm_getch(&t)) >= 0)
-	{
-		if (ch == TRM_K_ESCAPE)
-			sel[i] ^= 1;
-		if (ch == TRM_K_ESCAPE || ch == TRM_K_TAB || ch == TRM_K_RIGHT)
-			i = i + 1 < (int)avv.len ? i + 1 : 0;
-		else if (ch == TRM_K_LEFT)
-			i = i >= 1 ? i - 1 : (int)avv.len - 1;
-		else if (ch == TRM_K_UP && i - col >= 0)
-			i -= col;
-		else if (ch == TRM_K_DOWN || ch == TRM_K_UP)
-			i = i + col < (int)avv.len ? i + col : i % col;
-		else if (ch == TRM_K_ENTER)
-			break ;
-		else if (ch == TRM_K_DELETE || ch == TRM_K_BACKSPACE)
-			ft_vstr_remove(&avv, (size_t)i, NULL);
-		else if (ch == TRM_K_ESC)
-			return (ft_dtor(1, (t_dtor)ft_trm_dtor, &t, NULL));
-		select_draw(&t, &avv, (int [3]){15, i, 0}, sel);
-	}
-
+	p = slct(&t, &avv, sel);
 	ft_trm_dtor(&t);
+	if (ST_NOK(p))
+		return (EXIT_SUCCESS);
 	i = -1;
-	ch = 0;
 	while (++i < (int)avv.len)
-		if (sel[i] && ++ch)
+		if (sel[i] && ++p)
 			ft_putf(1, "%s ", avv.buf[i]);
-	if (ch)
-		ft_puts(1, "\b\n");
+	p ? ft_puts(1, "\b\n") : 0;
 	ft_vstr_dtor(&avv, NULL);
 	return (EXIT_SUCCESS);
 }
