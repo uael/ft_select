@@ -57,7 +57,7 @@ inline void	ft_trm_refresh(t_trm *self)
 	if (!isatty(self->out.u.file.fd))
 		return ;
 	if (ioctl(self->out.u.file.fd, TIOCGWINSZ, &w))
-		ft_fatal(ERR(errno), NULL, NULL, "ioctl: %e", errno);
+		ft_fatal(ERR(errno), (t_dtor)ft_trm_dtor, self, "ioctl: %e", errno);
 	self->w = w.ws_col;
 	self->h = w.ws_row;
 }
