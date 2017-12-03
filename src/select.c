@@ -46,7 +46,7 @@ static void		slct_draw(void)
 	}
 }
 
-static int		slct_refresh(void)
+static int		slct_ref(void)
 {
 	int i;
 
@@ -73,37 +73,37 @@ static int		slct_refresh(void)
 
 static t_st		slct(void)
 {
-	int	ch;
+	int	c;
 
-	while ((ch = slct_refresh()) >= 0 &&
-		(ch ? (ch = ft_trm_getch(&g_s.trm)) : 0) >= 0)
-		if (ch == TRM_K_ESCAPE)
-			g_s.sel.buf[ft_i32max(0, g_s.i - 1)] ^= (g_s.i = g_s.i + 1 <
-				(int)g_s.av.len ? g_s.i + 1 : 0) >= 0;
-		else if (ch == TRM_K_ESCAPE || ch == TRM_K_TAB || ch == TRM_K_RIGHT)
+	while ((c = slct_ref()) >= 0 && (c ? (c = ft_trm_getch(&g_s.trm)) : 0) >= 0)
+	{
+		if (c == TRM_K_ESCAPE)
+			g_s.sel.buf[g_s.i] ^= 1;
+		if (c == TRM_K_ESCAPE || c == TRM_K_TAB || c == TRM_K_RIGHT)
 			g_s.i = g_s.i + 1 < (int)g_s.av.len ? g_s.i + 1 : 0;
-		else if (ch == TRM_K_LEFT)
+		else if (c == TRM_K_LEFT)
 			g_s.i = g_s.i >= 1 ? g_s.i - 1 : (int)g_s.av.len - 1;
-		else if (ch == TRM_K_UP && g_s.i - g_s.c >= 0)
+		else if (c == TRM_K_UP && g_s.i - g_s.c >= 0)
 			g_s.i -= g_s.c;
-		else if (ch == TRM_K_DOWN || ch == TRM_K_UP)
+		else if (c == TRM_K_DOWN || c == TRM_K_UP)
 			g_s.i = g_s.i + g_s.c < (int)g_s.av.len ? g_s.i + g_s.c :
-				g_s.i % g_s.c;
-		else if (ch == TRM_K_ENTER || ch == TRM_K_ESC)
+					g_s.i % g_s.c;
+		else if (c == TRM_K_ENTER || c == TRM_K_ESC)
 			break ;
-		else if (ch == TRM_K_DELETE || ch == TRM_K_BACKSPACE)
+		else if (c == TRM_K_DELETE || c == TRM_K_BACKSPACE)
 		{
-			ft_vstr_remove(&g_s.av, (size_t)g_s.i, NULL);
-			ft_vu8_remove(&g_s.sel, (size_t)g_s.i, NULL);
+			ft_vstr_remove(&g_s.av, (size_t) g_s.i, NULL);
+			ft_vu8_remove(&g_s.sel, (size_t) g_s.i, NULL);
 			(int)g_s.av.len && g_s.i >= (int)g_s.av.len ? --g_s.i : 0;
 		}
-	return (ch == TRM_K_ENTER ? OK : NOK);
+	}
+	return (c == TRM_K_ENTER ? OK : NOK);
 }
 
 static void		slct_sighdl(int sig)
 {
 	if (sig == SIGWINCH)
-		slct_refresh();
+		slct_ref();
 	else if (SIG_ISKILL(sig))
 	{
 		ft_trm_dtor(&g_s.trm);
@@ -116,7 +116,7 @@ static void		slct_sighdl(int sig)
 		ft_trm_on(&g_s.trm);
 		signal(SIGTSTP, slct_sighdl);
 		signal(SIGCONT, slct_sighdl);
-		slct_refresh();
+		slct_ref();
 	}
 	else if (sig == SIGTSTP)
 	{
