@@ -12,42 +12,45 @@
 
 NAME = ft_select
 CC = gcc
-CC_FLAGS = -Wall -Werror -Wextra -I$(LFT_PATH)/include -O3
+CFLAGS = -Werror -Wextra -Wall -O3
 
-LFT_PATH = ./libft
 SRC_PATH = ./src/
-INC_PATH = ./include $(LFT_PATH)/include
 OBJ_PATH = ./obj/
+LIB_PATH = ./libft/
+INC_PATH = ./include/ $(addprefix $(LIB_PATH), include/)
+LNK_PATH = ./ $(LIB_PATH)
 
-SRC = $(addprefix $(SRC_PATH),$(SRC_NAME))
-OBJ = $(addprefix $(OBJ_PATH),$(OBJ_NAME))
-INC = $(addprefix -I,$(INC_PATH))
-
-OBJ_NAME = $(SRC_NAME:.c=.o)
 SRC_NAME = select.c
+OBJ_NAME = $(SRC_NAME:.c=.o)
+LIB_NAME = ft ncurses
+
+SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
+OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
+INC = $(addprefix -I, $(INC_PATH))
+LNK = $(addprefix -L, $(LNK_PATH))
+LIB = $(addprefix -l, $(LIB_NAME))
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	+$(MAKE) -C $(LFT_PATH)
-	$(CC) -o $(NAME) $(OBJ) -L$(LFT_PATH) -lft -lncurses
-
+	@make -C $(LIB_PATH)
+	@$(CC) $(CFLAGS) $(LNK) $(LIB) $(INC) $(OBJ) -o $(NAME)
+	@echo  "$(NAME): \033[32m[✔]\033[0m"
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir -p $(OBJ_PATH)
-	$(CC) $(CC_FLAGS) $(INC) -o $@ -c $<
+	@echo "$(NAME): \c"
+	$(CC) $(CFLAGS) $(INC) -o $@ -c $<
+	@echo "\033[A\033[K\033[A"
 
 clean:
-	make -C $(LFT_PATH) clean
-	rm -rf $(OBJ_PATH)
+	@rm -f $(OBJ)
+	@rmdir $(OBJ_PATH) 2> /dev/null || echo "" > /dev/null
 
 fclean: clean
-	make -C $(LFT_PATH) fclean
-	rm -f $(NAME)
+	@rm -f $(NAME)
 
 check:
 	@./test.sh
 
 re: fclean all
-
-.PHONY: all, $(NAME), clean, fclean, re

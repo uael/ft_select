@@ -32,7 +32,11 @@ inline char	*ft_caps_reset(void)
 	return (tgetstr("me", NULL));
 }
 
-inline char	*ft_caps_down(void)
+inline char	*ft_caps_up(int n)
 {
-	return (tgetstr("do", NULL));
+	if (n == 1)
+		return (tgetstr("up", NULL));
+	if (n)
+		return (tgoto(tgetstr("UP", NULL), 0, n));
+	return ("");
 }

@@ -41,3 +41,8 @@ inline int	ft_trm_getch(t_trm *t)
 	t->in.cur -= n;
 	return (0);
 }
+
+inline t_sz		ft_trm_puts(t_trm *self, char const *s)
+{
+	return (ft_ostream_puts(&self->out, s));
+}

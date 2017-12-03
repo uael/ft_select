@@ -10,23 +10,19 @@
 #                                                                              #
 # **************************************************************************** #
 
-PROJECT = libft
-NAME = $(PROJECT).a
+NAME = libft.a
 CC = gcc
-CFLAGS += -Wall -Werror -Wextra -O3
+CFLAGS = -Werror -Wextra -Wall -O3
 
 SRC_PATH = ./src/
-INC_PATH = ./include/
 OBJ_PATH = ./obj/
-OBJ_PATHS = cty ds fs int io lex lib math mem str trm
+LIB_PATH =
+INC_PATH = ./include/ $(addprefix $(LIB_PATH), include/)
+LNK_PATH = ./ $(LIB_PATH)
 
-OBJ_SUB_PATHS = $(addprefix $(OBJ_PATH),$(OBJ_PATHS))
-OBJ_NAME = $(SRC_NAME:.c=.o)
-SRC = $(addprefix $(SRC_PATH),$(SRC_NAME))
-OBJ = $(addprefix $(OBJ_PATH),$(OBJ_NAME))
-INC = $(addprefix -I,$(INC_PATH))
-
-SRC_NAME += \
+OBJ_NAME = $(notdir $(SRC_NAME:.c=.o))
+LIB_NAME =
+SRC_NAME =  \
 	cty/ft_isalnum.c \
 	cty/ft_isalpha.c \
 	cty/ft_isascii.c \
@@ -274,22 +270,33 @@ SRC_NAME += \
 	trm/ft_trm.c \
 	trm/ft_trm_keys.c
 
+SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
+OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
+INC = $(addprefix -I, $(INC_PATH))
+LNK = $(addprefix -L, $(LNK_PATH))
+LIB = $(addprefix -l, $(LIB_NAME))
+
 all: $(NAME)
 
-$(OBJ_PATH)%.o: $(SRC_PATH)%.c
-	@mkdir -p $(OBJ_SUB_PATHS)
-	$(CC) $(CFLAGS) $(INC) -o $@ -c $<
-
 $(NAME): $(OBJ)
-	ar -rc $(NAME) $?
-	ranlib $(NAME)
+	@ar -rc $(NAME) $?
+	@ranlib $(NAME)
+	@echo  "$(NAME): \033[32m[✔]\033[0m"
+
+$(OBJ_PATH)%.o: $(SRC_PATH)**/%.c
+	@mkdir -p $(OBJ_PATH)
+	@echo "$(NAME): \c"
+	$(CC) $(CFLAGS) $(INC) -o $@ -c $<
+	@echo "\033[A\033[K\033[A"
 
 clean:
-	/bin/rm -rf $(OBJ_PATH)
+	@rm -f $(OBJ)
+	@rmdir $(OBJ_PATH) 2> /dev/null || echo "" > /dev/null
 
 fclean: clean
-	/bin/rm -rf $(NAME)
+	@rm -f $(NAME)
+
+check:
+	@./test.sh
 
 re: fclean all
-
-.PHONY: clean fclean re

@@ -33,7 +33,7 @@ extern char		*ft_caps_gotox(int x);
 extern char		*ft_caps_underline(void);
 extern char		*ft_caps_rvideo(void);
 extern char		*ft_caps_reset(void);
-extern char		*ft_caps_down(void);
+extern char		*ft_caps_up(int n);
 
 typedef TTY		t_trmios;
 
@@ -51,8 +51,10 @@ typedef struct	s_trm
 
 extern t_st		ft_trm_ctor(t_trm *self);
 extern void		ft_trm_dtor(t_trm *self);
+extern void		ft_trm_register(t_trm *self);
 extern void		ft_trm_refresh(t_trm *self);
 extern void		ft_trm_clear(t_trm *self);
-extern int		ft_trm_getch(t_trm *t);
+extern int		ft_trm_getch(t_trm *self);
+extern t_sz		ft_trm_puts(t_trm *self, char const *s);
 
 #endif
