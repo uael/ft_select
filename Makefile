@@ -12,7 +12,7 @@
 
 NAME = ft_select
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall -O3
+CFLAGS = -Werror -Wextra -Wall -g3
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
@@ -33,7 +33,7 @@ LIB = $(addprefix -l, $(LIB_NAME))
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@make -C $(LIB_PATH)
+	@$(MAKE) -C $(LIB_PATH)
 	@$(CC) $(CFLAGS) $(LNK) $(LIB) $(INC) $(OBJ) -o $(NAME)
 	@echo  "$(NAME): \033[32m[✔]\033[0m"
 
@@ -44,6 +44,7 @@ $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 	@echo "\033[A\033[K\033[A"
 
 clean:
+	@$(MAKE) -C $(LIB_PATH) clean
 	@rm -f $(OBJ)
 	@rmdir $(OBJ_PATH) 2> /dev/null || echo "" > /dev/null
 

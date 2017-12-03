@@ -23,7 +23,8 @@ inline int	ft_trm_getch(t_trm *t)
 	n = 0;
 	ft_memset(c, 0, 2 * sizeof(char));
 	while (42)
-		if (!ft_du8_size(&t->in) && ((r = (int)read(0, &c, 2)) < 0 ||
+		if (!ft_du8_size(&t->in) &&
+			((r = (int)read(t->out.u.file.fd, &c, 2)) < 0 ||
 			(r && !ft_du8_pushnc(&t->in, c, (size_t)r))))
 			return (ENO);
 		else if (ft_du8_popn(&t->in, 2, c) <= 0)

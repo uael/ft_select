@@ -43,18 +43,17 @@ typedef struct	s_trm
 	t_trmios	tmp;
 	int			h;
 	int			w;
-	int			x;
-	int 		y;
 	t_ostream	out;
 	t_du8		in;
 }				t_trm;
 
 extern t_st		ft_trm_ctor(t_trm *self);
 extern void		ft_trm_dtor(t_trm *self);
-extern void		ft_trm_register(t_trm *self);
 extern void		ft_trm_refresh(t_trm *self);
 extern void		ft_trm_clear(t_trm *self);
 extern int		ft_trm_getch(t_trm *self);
 extern t_sz		ft_trm_puts(t_trm *self, char const *s);
+extern void		ft_trm_on(t_trm *self);
+extern void		ft_trm_off(t_trm *self);
 
 #endif

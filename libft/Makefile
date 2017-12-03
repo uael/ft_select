@@ -12,7 +12,7 @@
 
 NAME = libft.a
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall -O3
+CFLAGS = -Werror -Wextra -Wall -g3
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
@@ -268,6 +268,7 @@ SRC_NAME =  \
 	str/ft_strstr.c \
 	trm/ft_caps.c \
 	trm/ft_trm.c \
+	trm/ft_trm_on.c \
 	trm/ft_trm_keys.c
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))

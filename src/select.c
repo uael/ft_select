@@ -62,9 +62,7 @@ static t_st		slct(void)
 {
 	int	ch;
 
-	ft_trm_puts(&g_s.trm, tgetstr("ti", NULL));
-	ft_trm_puts(&g_s.trm, tgetstr("vi", NULL));
-	while (slct_refresh() && (ch = ft_trm_getch(&g_s.trm)) > 0)
+	while (slct_refresh() && (ch = ft_trm_getch(&g_s.trm)) >= 0)
 	{
 		if (ch == TRM_K_ESCAPE)
 			g_s.sel.buf[g_s.cur] ^= 1;
@@ -89,21 +87,25 @@ static t_st		slct(void)
 
 static void		slct_sighdl(int sig)
 {
-	if (sig == SIGTSTP || SIG_ISKILL(sig))
+	if (SIG_ISKILL(sig))
+	{
 		ft_trm_dtor(&g_s.trm);
-	else if (sig == SIGCONT)
+		ft_vstr_dtor(&g_s.av, NULL);
+		ft_vu8_dtor(&g_s.sel, NULL);
+		exit(0);
+	}
+	if (sig == SIGCONT)
 	{
 		signal(SIGTSTP, slct_sighdl);
 		signal(SIGCONT, slct_sighdl);
-		ft_trm_ctor(&g_s.trm);
+		ft_trm_on(&g_s.trm);
 	}
-	SIG_ISKILL(sig) ? exit(0) : 0;
-	if (sig == SIGTSTP)
+	else if (sig == SIGTSTP)
 	{
+		ft_trm_off(&g_s.trm);
 		signal(SIGTSTP, SIG_DFL);
-		return ;
 	}
-	else if (sig != SIGCONT && sig != SIGWINCH)
+	if (sig != SIGCONT && sig != SIGWINCH)
 		return ;
 	slct_refresh();
 }
@@ -132,5 +134,6 @@ int				main(int ac, char **av)
 			ft_putf(1, "%s ", g_s.av.buf[i]);
 	p ? ft_puts(1, "\b\n") : 0;
 	ft_vstr_dtor(&g_s.av, NULL);
+	ft_vu8_dtor(&g_s.sel, NULL);
 	return (EXIT_SUCCESS);
 }
