@@ -152,8 +152,9 @@ int				main(int ac, char **av)
 	ft_trm_dtor(&g_s.trm);
 	while (++i < (int)g_s.av.len)
 		if (g_s.sel.buf[i] && ++p)
-			ft_putf(1, "%s ", g_s.av.buf[i]);
-	p ? ft_puts(1, "\b\n") : 0;
+			ft_cout_writef("%s ", g_s.av.buf[i]);
+	g_cout->u.file.buf[g_cout->u.file.len - 1] = '\n';
+	ft_cout_flush();
 	ft_vstr_dtor(&g_s.av, NULL);
 	ft_vu8_dtor(&g_s.sel, NULL);
 	return (EXIT_SUCCESS);
