@@ -12,11 +12,6 @@
 
 #include "libft/trm.h"
 
-inline char	*ft_caps_gotox(int x)
-{
-	return (tgoto(tgetstr("ch", NULL), 0, x));
-}
-
 inline char	*ft_caps_underline(void)
 {
 	return (tgetstr("us", NULL));
@@ -30,13 +25,4 @@ inline char	*ft_caps_rvideo(void)
 inline char	*ft_caps_reset(void)
 {
 	return (tgetstr("me", NULL));
-}
-
-inline char	*ft_caps_up(int n)
-{
-	if (n == 1)
-		return (tgetstr("up", NULL));
-	if (n)
-		return (tgoto(tgetstr("UP", NULL), 0, n));
-	return ("");
 }

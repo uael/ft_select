@@ -18,22 +18,20 @@
 # include "io.h"
 # include "lib.h"
 
-# define TRM_K_TAB 9
-# define TRM_K_ENTER 10
-# define TRM_K_ESC 27
-# define TRM_K_ESCAPE 32
-# define TRM_K_BACKSPACE 127
-# define TRM_K_DELETE 126
-# define TRM_K_UP 65
-# define TRM_K_DOWN 66
-# define TRM_K_RIGHT 67
-# define TRM_K_LEFT 68
+# define TRK_TAB 9
+# define TRK_ENTER 10
+# define TRK_ESC 27
+# define TRK_ESCAPE 32
+# define TRK_BACKSPACE 127
+# define TRK_DELETE 126
+# define TRK_UP 65
+# define TRK_DOWN 66
+# define TRK_RIGHT 67
+# define TRK_LEFT 68
 
-extern char		*ft_caps_gotox(int x);
 extern char		*ft_caps_underline(void);
 extern char		*ft_caps_rvideo(void);
 extern char		*ft_caps_reset(void);
-extern char		*ft_caps_up(int n);
 
 typedef TTY		t_trmios;
 

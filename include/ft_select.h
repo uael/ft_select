@@ -21,8 +21,9 @@ typedef struct	s_slct
 	t_trm	trm;
 	t_vstr	av;
 	t_vu8	sel;
-	int		c;
-	int		my;
+	int		col;
+	int		row;
+	int		rowm;
 	int		beg;
 	int		i;
 	int		pad;

@@ -26,20 +26,23 @@ static void		slct_draw(void)
 
 	i = g_s.beg;
 	y = -1;
-	while (++y < g_s.my && i < (int)g_s.av.len && (x = -1))
+	while (++y < g_s.rowm && i < (int)g_s.av.len && (x = -1))
 	{
-		while (++x < g_s.c && i < (int)g_s.av.len)
+		while (++x < g_s.col && i < (int)g_s.av.len)
 		{
 			ft_trm_puts(&g_s.trm, "[ ");
 			i == g_s.i ? ft_trm_puts(&g_s.trm, ft_caps_underline()) : 0;
 			g_s.sel.buf[i] ? ft_trm_puts(&g_s.trm, ft_caps_rvideo()) : 0;
+			ft_trm_puts(&g_s.trm,
+				access(g_s.av.buf[i], F_OK) ? "\033[31m" : "\033[32m");
 			ft_trm_puts(&g_s.trm, g_s.av.buf[i]);
+			ft_trm_puts(&g_s.trm, "\033[0m");
 			ft_trm_puts(&g_s.trm, ft_caps_reset());
 			ft_trm_putr(&g_s.trm, ' ', (size_t)(g_s.pad -
 				ft_strlen(g_s.av.buf[i++]) - 3));
 			ft_trm_puts(&g_s.trm, "]");
 		}
-		if (i < (int)g_s.av.len && y + 1 < g_s.my)
+		if (i < (int)g_s.av.len && y + 1 < g_s.rowm)
 			ft_trm_puts(&g_s.trm, "\n");
 	}
 }
@@ -59,43 +62,47 @@ static int		slct_ref(void)
 	while (++i < (int)g_s.av.len)
 		g_s.pad = ft_i32max(g_s.pad, (int32_t)ft_strlen(g_s.av.buf[i]));
 	g_s.pad += 4;
-	if ((g_s.c = g_s.trm.w / g_s.pad) == 0)
+	if ((g_s.col = g_s.trm.w / g_s.pad) == 0)
 		return (0);
-	g_s.my = g_s.trm.h;
-	g_s.beg = (g_s.i / g_s.c) >= g_s.my
-		? ((g_s.i / g_s.c) - (g_s.my - 1)) * g_s.c : 0;
+	g_s.row = (int)g_s.av.len / g_s.col;
+	g_s.rowm = g_s.trm.h;
+	g_s.beg = (g_s.i / g_s.col) >= g_s.rowm
+		? ((g_s.i / g_s.col) - (g_s.rowm - 1)) * g_s.col : 0;
 	slct_draw();
 	ft_ostream_flush(&g_s.trm.out);
 	return (1);
 }
 
+#define DO_UP(i, c, r, ac) (((i)=((i)-(c)>=0?(i)-(c):(i)+((c)*(r))))>=(ac))
+#define DO_DOWN(i, c, ac) ((i)+(c)<(ac)?(i)+(c):(i)%(c))
+
 static t_st		slct(void)
 {
 	int	c;
 
-	while ((c = slct_ref()) >= 0 && (c ? (c = ft_trm_getch(&g_s.trm)) : 0) >= 0)
+	while ((c = slct_ref()) >= 0 &&
+		(c ? (c = ft_trm_getch(&g_s.trm)) : 0) >= 0)
 	{
-		if (c == TRM_K_ESCAPE)
+		if (c == TRK_ESCAPE)
 			g_s.sel.buf[g_s.i] ^= 1;
-		if (c == TRM_K_ESCAPE || c == TRM_K_TAB || c == TRM_K_RIGHT)
+		if (c == TRK_ESCAPE || c == TRK_TAB || c == TRK_RIGHT)
 			g_s.i = g_s.i + 1 < (int)g_s.av.len ? g_s.i + 1 : 0;
-		else if (c == TRM_K_LEFT)
+		else if (c == TRK_LEFT)
 			g_s.i = g_s.i >= 1 ? g_s.i - 1 : (int)g_s.av.len - 1;
-		else if (c == TRM_K_UP && g_s.i - g_s.c >= 0)
-			g_s.i -= g_s.c;
-		else if (c == TRM_K_DOWN || c == TRM_K_UP)
-			g_s.i = g_s.i + g_s.c < (int)g_s.av.len ? g_s.i + g_s.c :
-					g_s.i % g_s.c;
-		else if (c == TRM_K_ENTER || c == TRM_K_ESC)
+		else if (c == TRK_UP && DO_UP(g_s.i, g_s.col, g_s.row, (int)g_s.av.len))
+			g_s.i = g_s.i - g_s.col;
+		else if (c == TRK_DOWN)
+			g_s.i = DO_DOWN(g_s.i, g_s.col, (int)g_s.av.len);
+		else if (c == TRK_ENTER || c == TRK_ESC)
 			break ;
-		else if (c == TRM_K_DELETE || c == TRM_K_BACKSPACE)
+		else if (c == TRK_DELETE || c == TRK_BACKSPACE)
 		{
-			ft_vstr_remove(&g_s.av, (size_t) g_s.i, NULL);
-			ft_vu8_remove(&g_s.sel, (size_t) g_s.i, NULL);
+			ft_vstr_remove(&g_s.av, (size_t)g_s.i, NULL);
+			ft_vu8_remove(&g_s.sel, (size_t)g_s.i, NULL);
 			(int)g_s.av.len && g_s.i >= (int)g_s.av.len ? --g_s.i : 0;
 		}
 	}
-	return (c == TRM_K_ENTER ? OK : NOK);
+	return (c == TRK_ENTER ? OK : NOK);
 }
 
 static void		slct_sighdl(int sig)
