@@ -25,7 +25,7 @@ inline int		ft_trm_getch(t_trm *t)
 	while (42)
 		if (!ft_du8_size(&t->in) &&
 			((r = (int)read(t->out.u.file.fd, &c, 2)) < 0 ||
-			(r && !ft_du8_pushnc(&t->in, c, (size_t)r))))
+			(r > 0 && !ft_du8_pushnc(&t->in, c, (size_t)r))))
 			return (ENO);
 		else if (ft_du8_popn(&t->in, 2, c) <= 0)
 			break ;
@@ -39,7 +39,6 @@ inline int		ft_trm_getch(t_trm *t)
 			return (c[0]);
 		else
 			break ;
-	t->in.cur -= n;
 	return (0);
 }
 

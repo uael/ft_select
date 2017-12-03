@@ -12,7 +12,7 @@
 
 NAME = ft_select
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall -g3
+CFLAGS = -Werror -Wextra -Wall -O3
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
@@ -44,7 +44,7 @@ $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 	@echo "\033[A\033[K\033[A"
 
 clean:
-	@$(MAKE) -C $(LIB_PATH) clean
+	@$(MAKE) -C $(LIB_PATH) clean -j4
 	@rm -f $(OBJ)
 	@rmdir $(OBJ_PATH) 2> /dev/null || echo "" > /dev/null
 
