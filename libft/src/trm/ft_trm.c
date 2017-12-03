@@ -29,7 +29,7 @@ t_st		ft_trm_ctor(t_trm *self)
 	if (!dev && !(dev = ttyname(STDERR_FILENO)))
 		return (ERR(errno = ENOTTY));
 	if (tgetent(NULL, tnm) <= 0 || ST_NOK(ft_ostream_open(&self->out, dev)))
-		return (ft_passf(NOK, "%s: %e.\n", errno));
+		return (ft_passf(NOK, "%s: %e.\n", "trm", errno));
 	ft_du8_ctor(&self->in);
 	tcgetattr(self->out.u.file.fd, &self->tty);
 	ft_memcpy(&self->tmp, &self->tty, sizeof(t_trmios));
