@@ -45,6 +45,7 @@ typedef struct	s_trm
 	int			w;
 	t_ostream	out;
 	t_du8		in;
+	t_bool		on;
 }				t_trm;
 
 extern t_st		ft_trm_ctor(t_trm *self);

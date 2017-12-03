@@ -21,10 +21,10 @@ typedef struct	s_slct
 	t_trm		trm;
 	t_vstr		av;
 	t_vu8		sel;
-	int			mx;
+	int			c;
 	int			my;
 	int			beg;
-	int			cur;
+	int			i;
 	int 		pad;
 }				t_slct;
 

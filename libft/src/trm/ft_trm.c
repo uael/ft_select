@@ -64,5 +64,7 @@ inline void	ft_trm_refresh(t_trm *self)
 
 inline void	ft_trm_clear(t_trm *self)
 {
+	ft_ostream_puts(&self->out, tgoto(tgetstr("cm", NULL), 0, 0));
 	ft_ostream_puts(&self->out, tgetstr("cl", NULL));
+	ft_ostream_flush(&self->out);
 }

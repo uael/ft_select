@@ -20,6 +20,7 @@ inline void	ft_trm_on(t_trm *self)
 	ft_trm_puts(self, tgetstr("ti", NULL));
 	ft_trm_puts(self, tgetstr("vi", NULL));
 	ft_ostream_flush(&self->out);
+	self->on = 1;
 }
 
 inline void	ft_trm_off(t_trm *self)
@@ -28,4 +29,5 @@ inline void	ft_trm_off(t_trm *self)
 	ft_trm_puts(self, tgetstr("te", NULL));
 	ft_trm_puts(self, tgetstr("ve", NULL));
 	ft_ostream_flush(&self->out);
+	self->on = 0;
 }
