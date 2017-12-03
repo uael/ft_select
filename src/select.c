@@ -47,13 +47,19 @@ static void		slct_draw(void)
 
 static int 		slct_refresh(void)
 {
+	int i;
+
 	if (!g_s.av.len)
 		return (0);
 	if (!g_s.trm.on)
 		return (1);
 	ft_trm_refresh(&g_s.trm);
 	ft_trm_clear(&g_s.trm);
-	g_s.pad = 15 + 4;
+	i = -1;
+	g_s.pad = 0;
+	while (++i < (int)g_s.av.len)
+		g_s.pad = ft_i32max(g_s.pad, (int32_t)ft_strlen(g_s.av.buf[i]));
+	g_s.pad += 4;
 	g_s.c = g_s.trm.w / g_s.pad;
 	g_s.my = g_s.trm.h;
 	g_s.beg = (g_s.i / g_s.c) >= g_s.my
