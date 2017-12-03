@@ -138,7 +138,7 @@ int				main(int ac, char **av)
 
 	ft_memset(&g_s, 0, sizeof(t_slct));
 	if (ac <= 1 || ST_NOK(ft_trm_ctor(&g_s.trm)))
-		return (ac <= 1 ? ft_passf(NOK, "%e\n", EINVAL) : 1);
+		return (ac <= 1 ? ft_passf(NOK, "select: %e\n", EINVAL) : 1);
 	if (!ft_vstr_pushnc(&g_s.av, (const char **)(av + 1), (size_t)(ac - 1))
 		|| !ft_vu8_grow(&g_s.sel, (size_t)(ac - 1)))
 		ft_fatal(ERR(errno), NULL, NULL, "%s: %e\n", "select", errno);
