@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <sys/ioctl.h>
+
 #include "ft_select.h"
 
 #define SIG_ISKILL(s) ((s)==SIGINT||(s)==SIGQUIT||(s)==SIGKILL||(s)==SIGTERM)
@@ -26,9 +27,9 @@ static void		slct_draw(void)
 
 	i = g_s.beg;
 	y = -1;
-	while (++y < g_s.my && i < (int) g_s.av.len && (x = -1))
+	while (++y < g_s.my && i < (int)g_s.av.len && (x = -1))
 	{
-		while (++x < g_s.c && i < (int) g_s.av.len)
+		while (++x < g_s.c && i < (int)g_s.av.len)
 		{
 			ft_trm_puts(&g_s.trm, "[ ");
 			i == g_s.i ? ft_trm_puts(&g_s.trm, ft_caps_underline()) : 0;
@@ -40,27 +41,28 @@ static void		slct_draw(void)
 				ft_trm_puts(&g_s.trm, " ");
 			ft_trm_puts(&g_s.trm, "]");
 		}
-		if (i < (int) g_s.av.len && y + 1 < g_s.my)
+		if (i < (int)g_s.av.len && y + 1 < g_s.my)
 			ft_trm_puts(&g_s.trm, "\n");
 	}
 }
 
-static int 		slct_refresh(void)
+static int		slct_refresh(void)
 {
 	int i;
 
 	if (!g_s.av.len)
-		return (0);
+		return (-1);
 	if (!g_s.trm.on)
-		return (1);
-	ft_trm_refresh(&g_s.trm);
+		return (0);
 	ft_trm_clear(&g_s.trm);
+	ft_trm_refresh(&g_s.trm);
 	i = -1;
 	g_s.pad = 0;
 	while (++i < (int)g_s.av.len)
 		g_s.pad = ft_i32max(g_s.pad, (int32_t)ft_strlen(g_s.av.buf[i]));
 	g_s.pad += 4;
-	g_s.c = g_s.trm.w / g_s.pad;
+	if ((g_s.c = g_s.trm.w / g_s.pad) == 0)
+		return (0);
 	g_s.my = g_s.trm.h;
 	g_s.beg = (g_s.i / g_s.c) >= g_s.my
 		? ((g_s.i / g_s.c) - (g_s.my - 1)) * g_s.c : 0;
@@ -73,11 +75,12 @@ static t_st		slct(void)
 {
 	int	ch;
 
-	while (slct_refresh() && (ch = ft_trm_getch(&g_s.trm)) >= 0)
-	{
+	while ((ch = slct_refresh()) >= 0 &&
+		(ch ? (ch = ft_trm_getch(&g_s.trm)) : 0) >= 0)
 		if (ch == TRM_K_ESCAPE)
-			g_s.sel.buf[g_s.i] ^= 1;
-		if (ch == TRM_K_ESCAPE || ch == TRM_K_TAB || ch == TRM_K_RIGHT)
+			g_s.sel.buf[ft_i32max(0, g_s.i - 1)] ^= (g_s.i = g_s.i + 1 <
+				(int)g_s.av.len ? g_s.i + 1 : 0) >= 0;
+		else if (ch == TRM_K_ESCAPE || ch == TRM_K_TAB || ch == TRM_K_RIGHT)
 			g_s.i = g_s.i + 1 < (int)g_s.av.len ? g_s.i + 1 : 0;
 		else if (ch == TRM_K_LEFT)
 			g_s.i = g_s.i >= 1 ? g_s.i - 1 : (int)g_s.av.len - 1;
@@ -94,7 +97,6 @@ static t_st		slct(void)
 			ft_vu8_remove(&g_s.sel, (size_t)g_s.i, NULL);
 			(int)g_s.av.len && g_s.i >= (int)g_s.av.len ? --g_s.i : 0;
 		}
-	}
 	return (ch == TRM_K_ENTER ? OK : NOK);
 }
 
@@ -120,7 +122,7 @@ static void		slct_sighdl(int sig)
 	{
 		ft_trm_off(&g_s.trm);
 		signal(SIGTSTP, SIG_DFL);
-		ioctl(0, TIOCSTI, (char [2]){g_s.trm.tmp.c_cc[VSUSP], 0});
+		ioctl(0, TIOCSTI, (char[2]){g_s.trm.tmp.c_cc[VSUSP], 0});
 	}
 }
 

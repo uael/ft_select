@@ -13,19 +13,19 @@
 #ifndef FT_SELECT_H
 # define FT_SELECT_H
 
-#include <libft.h>
-#include <term.h>
+# include <libft.h>
+# include <term.h>
 
 typedef struct	s_slct
 {
-	t_trm		trm;
-	t_vstr		av;
-	t_vu8		sel;
-	int			c;
-	int			my;
-	int			beg;
-	int			i;
-	int 		pad;
+	t_trm	trm;
+	t_vstr	av;
+	t_vu8	sel;
+	int		c;
+	int		my;
+	int		beg;
+	int		i;
+	int		pad;
 }				t_slct;
 
 #endif

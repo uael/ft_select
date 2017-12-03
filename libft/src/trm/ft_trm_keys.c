@@ -18,7 +18,7 @@ inline int	ft_trm_getch(t_trm *t)
 {
 	uint8_t	c[2];
 	uint8_t	n;
-	int	r;
+	int		r;
 
 	n = 0;
 	ft_memset(c, 0, 2 * sizeof(char));
@@ -43,7 +43,7 @@ inline int	ft_trm_getch(t_trm *t)
 	return (0);
 }
 
-inline t_sz		ft_trm_puts(t_trm *self, char const *s)
+inline t_sz	ft_trm_puts(t_trm *self, char const *s)
 {
 	return (ft_ostream_puts(&self->out, s));
 }
