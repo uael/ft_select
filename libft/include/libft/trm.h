@@ -54,6 +54,7 @@ extern void		ft_trm_refresh(t_trm *self);
 extern void		ft_trm_clear(t_trm *self);
 extern int		ft_trm_getch(t_trm *self);
 extern t_sz		ft_trm_puts(t_trm *self, char const *s);
+extern ssize_t	ft_trm_putr(t_trm *self, char c, size_t n);
 extern void		ft_trm_on(t_trm *self);
 extern void		ft_trm_off(t_trm *self);
 

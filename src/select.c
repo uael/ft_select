@@ -23,7 +23,6 @@ static void		slct_draw(void)
 	int	i;
 	int	x;
 	int	y;
-	int	k;
 
 	i = g_s.beg;
 	y = -1;
@@ -34,11 +33,10 @@ static void		slct_draw(void)
 			ft_trm_puts(&g_s.trm, "[ ");
 			i == g_s.i ? ft_trm_puts(&g_s.trm, ft_caps_underline()) : 0;
 			g_s.sel.buf[i] ? ft_trm_puts(&g_s.trm, ft_caps_rvideo()) : 0;
-			ft_trm_puts(&g_s.trm, g_s.av.buf[i++]);
+			ft_trm_puts(&g_s.trm, g_s.av.buf[i]);
 			ft_trm_puts(&g_s.trm, ft_caps_reset());
-			k = -1;
-			while (++k < g_s.pad - 3 - (int)ft_strlen(g_s.av.buf[i - 1]))
-				ft_trm_puts(&g_s.trm, " ");
+			ft_trm_putr(&g_s.trm, ' ', (size_t)(g_s.pad -
+				ft_strlen(g_s.av.buf[i++]) - 3));
 			ft_trm_puts(&g_s.trm, "]");
 		}
 		if (i < (int)g_s.av.len && y + 1 < g_s.my)
@@ -138,7 +136,7 @@ int				main(int ac, char **av)
 		|| !ft_vu8_grow(&g_s.sel, (size_t)(ac - 1)))
 		ft_fatal(ERR(errno), NULL, NULL, "%s: %e\n", "select", errno);
 	ft_memset(g_s.sel.buf, i = 0, (size_t)(ac - 1));
-	while (i < 33)
+	while (i < 32)
 		signal(i++, slct_sighdl);
 	if (ST_NOK(slct()))
 		return (ft_dtor(EXIT_SUCCESS, (t_dtor)ft_trm_dtor, &g_s.trm, NULL));

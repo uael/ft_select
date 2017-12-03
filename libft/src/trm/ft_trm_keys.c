@@ -14,7 +14,7 @@
 
 #define TRK_ONEK(ch) ((ch)==9||(ch)==10||(ch)==32||(ch)==127||(ch)==27)
 
-inline int	ft_trm_getch(t_trm *t)
+inline int		ft_trm_getch(t_trm *t)
 {
 	uint8_t	c[2];
 	uint8_t	n;
@@ -43,7 +43,18 @@ inline int	ft_trm_getch(t_trm *t)
 	return (0);
 }
 
-inline t_sz	ft_trm_puts(t_trm *self, char const *s)
+inline t_sz		ft_trm_puts(t_trm *self, char const *s)
 {
 	return (ft_ostream_puts(&self->out, s));
+}
+
+inline ssize_t	ft_trm_putr(t_trm *self, char c, size_t n)
+{
+	char buf[(n * sizeof(char)) + 1];
+
+	if (!n)
+		return (0);
+	ft_memset(buf, c, n);
+	buf[n] = '\0';
+	return (ft_trm_puts(self, buf));
 }
