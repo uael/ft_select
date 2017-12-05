@@ -55,3 +55,5 @@ check:
 	@./test.sh
 
 re: fclean all
+
+.PHONY: all, $(NAME), clean, fclean, re
