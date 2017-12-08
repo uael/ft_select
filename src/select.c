@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/12/08 08:43:04 by alucas-          ###   ########.fr       */
+/*   Updated: 2017/12/08 08:43:19 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static void		slct_draw(void)
 	}
 }
 
-static int		slct_ref(void)
+static int		slct_refresh(void)
 {
 	int i;
 
@@ -80,7 +80,7 @@ static t_st		slct(void)
 {
 	int	c;
 
-	while ((c = slct_ref()) >= 0 &&
+	while ((c = slct_refresh()) >= 0 &&
 		(c ? (c = ft_trm_getch(&g_s.trm)) : 0) >= 0)
 	{
 		if (c == TRK_ESCAPE)
@@ -108,7 +108,7 @@ static t_st		slct(void)
 static void		slct_sighdl(int sig)
 {
 	if (sig == SIGWINCH)
-		slct_ref();
+		slct_refresh();
 	else if (SIG_ISKILL(sig))
 	{
 		ft_trm_dtor(&g_s.trm);
@@ -121,7 +121,7 @@ static void		slct_sighdl(int sig)
 		ft_trm_on(&g_s.trm);
 		signal(SIGTSTP, slct_sighdl);
 		signal(SIGCONT, slct_sighdl);
-		slct_ref();
+		slct_refresh();
 	}
 	else if (sig == SIGTSTP)
 	{
