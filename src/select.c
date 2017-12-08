@@ -6,7 +6,7 @@
 /*   By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/07 09:52:30 by alucas-           #+#    #+#             */
-/*   Updated: 2017/11/17 09:57:12 by null             ###   ########.fr       */
+/*   Updated: 2017/12/08 08:43:04 by alucas-          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,8 @@ int				main(int ac, char **av)
 	if (!ft_vstr_pushnc(&g_s.av, (const char **)(av + 1), (size_t)(ac - 1))
 		|| !ft_vu8_grow(&g_s.sel, (size_t)(ac - 1)))
 		ft_fatal(ERR(errno), NULL, NULL, "%s: %e\n", "select", errno);
-	ft_memset(g_s.sel.buf, i = 0, (size_t)(ac - 1));
+	ft_memset(g_s.sel.buf, 0, g_s.sel.len = g_s.av.len);
+	i = 0;
 	while (i < 32)
 		signal(i++, slct_sighdl);
 	if (ST_NOK(slct()))
@@ -151,8 +152,7 @@ int				main(int ac, char **av)
 	i = -1;
 	ft_trm_dtor(&g_s.trm);
 	while (++i < (int)g_s.av.len)
-		if (g_s.sel.buf[i] && ++p)
-			ft_cout_writef("%s ", g_s.av.buf[i]);
+		(g_s.sel.buf[i] && ++p) ? ft_cout_writef("%s ", g_s.av.buf[i]) : 0;
 	g_cout->u.file.buf[g_cout->u.file.len - 1] = '\n';
 	ft_cout_flush();
 	ft_vstr_dtor(&g_s.av, NULL);
