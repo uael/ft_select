@@ -6,7 +6,7 @@
 #    By: alucas- <alucas-@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/11/07 09:52:36 by alucas-           #+#    #+#              #
-#    Updated: 2017/11/18 09:54:36 by null             ###   ########.fr        #
+#    Updated: 2017/12/08 08:19:40 by alucas-          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,13 +16,14 @@ CFLAGS = -Werror -Wextra -Wall -O3
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
-LIB_PATH =
-INC_PATH = ./include/ $(addprefix $(LIB_PATH), include/)
-LNK_PATH = ./ $(LIB_PATH)
+SOB_PATH = cty/ ds/ fs /int/ io/ lex/ lib/ math/ mem/ str/ trm/
+3TH_PATH =
+INC_PATH = ./include/ $(addprefix $(3TH_PATH), include/)
+LNK_PATH = ./ $(3TH_PATH)
 
-OBJ_NAME = $(notdir $(SRC_NAME:.c=.o))
-LIB_NAME =
-SRC_NAME =  \
+OBJ_NAME = $(SRC_NAME:.c=.o)
+3TH_NAME = ncurses
+SRC_NAME = \
 	cty/ft_isalnum.c \
 	cty/ft_isalpha.c \
 	cty/ft_isascii.c \
@@ -272,33 +273,51 @@ SRC_NAME =  \
 	trm/ft_trm_keys.c
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
+SOB = $(addprefix $(OBJ_PATH), $(SOB_PATH))
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
 INC = $(addprefix -I, $(INC_PATH))
 LNK = $(addprefix -L, $(LNK_PATH))
-LIB = $(addprefix -l, $(LIB_NAME))
+3TH = $(addprefix -l, $(3TH_NAME))
+EXE =
+LIB = $(NAME)
 
-all: $(NAME)
+all: $(EXE) $(LIB)
 
-$(NAME): $(OBJ)
-	@ar -rc $(NAME) $?
+$(LIB): 3th $(OBJ)
+	@ar -rc $(NAME) $(OBJ)
 	@ranlib $(NAME)
-	@echo  "$(NAME): \033[32m[✔]\033[0m"
+	@printf  "%-20s\033[32m[✔]\033[0m\n" "$(NAME): lib"
 
-$(OBJ_PATH)%.o: $(SRC_PATH)**/%.c
-	@mkdir -p $(OBJ_PATH)
-	@echo "$(NAME): \c"
-	$(CC) $(CFLAGS) $(INC) -o $@ -c $<
-	@echo "\033[A\033[K\033[A"
+$(EXE): 3th $(OBJ)
+	@$(CC) $(CFLAGS) $(LNK) $(INC) $(OBJ) -o $(NAME) $(3TH)
+	@printf  "%-20s\033[32m[✔]\033[0m\n" "$(NAME): exe"
+
+$(OBJ_PATH)%.o: $(SRC_PATH)%.c
+	@mkdir -p $(shell dirname $@)
+	@printf  "\r%-20s\033[34m[$<]\033[0m\n" "$(NAME):"
+	@$(CC) $(CFLAGS) $(INC) -o $@ -c $<
 
 clean:
-	@rm -f $(OBJ)
-	@rmdir $(OBJ_PATH) 2> /dev/null || echo "" > /dev/null
+ifneq ($(3TH_PATH),)
+	@$(MAKE) -C $(3TH_PATH) clean
+endif
+	@rm -rf $(OBJ_PATH)
+	@printf  "%-20s\033[32m[✔]\033[0m\n" "$(NAME): $@"
 
 fclean: clean
+ifneq ($(3TH_PATH),)
+	@$(MAKE) -C $(3TH_PATH) fclean
+endif
 	@rm -f $(NAME)
+	@printf  "%-20s\033[32m[✔]\033[0m\n" "$(NAME): $@"
 
-check:
-	@./test.sh
+3th:
+ifneq ($(3TH_PATH),)
+	@$(MAKE) -C $(3TH_PATH) -j4
+endif
+
+norm:
+	@./norm.sh $(shell find $(SRC_PATH) $(INC_PATH) -name '*.h' -o -name '*.c')
 
 re: fclean all
 
